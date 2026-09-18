@@ -5,24 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Java
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-      - name: Unzip project
+      - name: Prepare project
         run: |
-          unzip -o athanase-library.zip -d project || true
-          ls -la
-          ls -la project || true
-      - name: Build Debug APK
-        run: |
-          cd project
-          if [ -f gradlew ]; then chmod +x gradlew;./gradlew assembleDebug; else gradle assembleDebug; fi
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Athanase-APK
-          path: '**/build/outputs/apk/debug/*.apk'
+          rm -rf app_project
+          unzip -o athan
