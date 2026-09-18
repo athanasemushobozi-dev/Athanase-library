@@ -11,13 +11,15 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Build Debug APK
+      - name: Unzip and Build
         run: |
           ls -la
-          echo "--- Searching gradlew ---"
-          find . -name "gradlew" -type f
-          GRADLEW=$(find . -name "gradlew" -type f | head -n1)
-          echo "Found at: $GRADLEW"
+          ZIP=$(find . -name "*.zip" | head -n1)
+          echo "Unzipping $ZIP"
+          unzip -o "$ZIP" -d project
+          ls -la project
+          GRADLEW=$(find project -name "gradlew" -type f | head -n1)
+          echo "Found gradlew at: $GRADLEW"
           chmod +x "$GRADLEW"
           cd $(dirname "$GRADLEW")
           ./gradlew assembleDebug
