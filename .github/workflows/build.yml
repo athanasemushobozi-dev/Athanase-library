@@ -1,22 +1,31 @@
 name: Build APK
-on: 
+
+on:
   push:
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout source code
       - uses: actions/checkout@v4
+
+      # Step 2: Setup Java environment
       - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      # Step 3: Unzip project source
       - run: |
           ls -la
           ZIP=$(find . -maxdepth 2 -name "*.zip" | head -n1)
           echo "Found: $ZIP"
           unzip -o "$ZIP" -d src
           ls -la src
+
+      # Step 4: Build APK using Gradle
       - run: |
           GRADLEW=$(find src -name "gradlew" | head -n1)
           echo "Gradlew at: $GRADLEW"
@@ -24,6 +33,8 @@ jobs:
           cd "$DIR"
           chmod +x gradlew
           ./gradlew assembleDebug
+
+      # Step 5: Upload APK artifact
       - uses: actions/upload-artifact@v4
         with:
           name: Athanase-APK
