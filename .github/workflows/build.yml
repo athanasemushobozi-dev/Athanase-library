@@ -5,27 +5,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Unzip project
-        run: |
-          unzip -o athanase-library.zip
-          if [ -d "athanase-library1" ]; then mv athanase-library1/*.; fi
-          if [ -d "athanase-library" ]; then mv athanase-library/*.; fi
-          ls -la
-
-      - name: Setup Java
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Build APK
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Unzip project
         run: |
-          chmod +x./gradlew
-         ./gradlew assembleDebug
-
+          unzip -o athanase-library.zip -d project || true
+          ls -la
+          ls -la project || true
+      - name: Build Debug APK
+        run: |
+          cd project
+          if [ -f gradlew ]; then chmod +x gradlew;./gradlew assembleDebug; else gradle assembleDebug; fi
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Athanase-APK
-          path: app/build/outputs/apk/debug/*.apk
+          path: '**/build/outputs/apk/debug/*.apk'
