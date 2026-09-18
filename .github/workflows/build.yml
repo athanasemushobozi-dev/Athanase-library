@@ -12,14 +12,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - run: |
-          ZIP=$(ls *.zip | head -n1)
+          ls -la
+          ZIP=$(find . -maxdepth 2 -name "*.zip" | head -n1)
+          echo "Found: $ZIP"
           unzip -o "$ZIP" -d src
+          ls -la src
       - run: |
-          cd src
-          cd $(ls -d */ | head -n1)
+          GRADLEW=$(find src -name "gradlew" | head -n1)
+          echo "Gradlew at: $GRADLEW"
+          DIR=$(dirname "$GRADLEW")
+          cd "$DIR"
           chmod +x gradlew
           ./gradlew assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: Athanase-APK
-          path: src/**/build/outputs/apk/debug/*.apk
+          path: "**/build/outputs/apk/debug/*.apk"
